@@ -1,0 +1,3 @@
+Flask
+mongoengine
+git+git://github.com/sbook/flask-mongoengine
