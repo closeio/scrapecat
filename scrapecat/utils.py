@@ -22,7 +22,6 @@ def traverse(parent_node, match_el=None, match_text=None, depth=0, ignore_tags=N
         for node_type, node_value in node_info:
             if node_type == 1: # element node
                 if node.tagName() not in ignore_tags:
-
                     ret += traverse(node,
                         match_el=match_el,
                         match_text=match_text,
@@ -109,6 +108,12 @@ def find_emails(s):
         if email_re.match(part):
             emails.append(part)
     return emails
+
+
+""" Traverses the passed in element and returns a tuple of (element, [match1, match2, ...]) where a text match occurs. """
+def traverse_extract(el, match_text):
+    return [(el, match_text(el.toPlainText())) for el in traverse(el, match_text=match_text)]
+
 
 
 
