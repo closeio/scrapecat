@@ -3,6 +3,6 @@ Flask-WTF
 requests
 mongoengine
 git+git://github.com/sbook/flask-mongoengine
-Ghost.py
+git+git://github.com/anemitz/Ghost.py.git
 Celery
 flask-celery
