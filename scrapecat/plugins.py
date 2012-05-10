@@ -1,7 +1,13 @@
+import os
+import sys
 import sys
 import logging
 import ghost
+
+sys.path.append(os.path.abspath('.'))
+
 from scrapecat import models
+
 from PySide.QtWebKit import QWebSettings
 
 import phonenumbers
