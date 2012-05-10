@@ -72,10 +72,10 @@ class ContactPlugin(Plugin):
         return [{
             'emails': list(set(utils.find_emails(email.attribute('href')) + utils.find_emails(email.toPlainText()))),
             'phones': list(set([utils.format_us_phone_number(match.raw_string) for match in phonenumbers.PhoneNumberMatcher(phone.toPlainText(), 'US')])),
-            'addresses': [
+            'addresses': list(chain(*[
                 [(lambda city, state, zip_code: {'city': city.strip(), 'state': state, 'zip': zip_code})(*match) for match in matches]
                     for el, matches in utils.traverse_extract(group_parent, lambda s: validators.address_re.findall(s))
-            ],
+            ])),
         } for email, phone, group_parent in utils.group_by_common_parents(self.email_els, self.phone_els)]
 
 if __name__ == '__main__':
