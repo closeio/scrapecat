@@ -5,6 +5,6 @@ scrapecat
 
 python runserver.py
 
-python manage.py -l DEBUG
+python manage.py celeryd -l DEBUG
 
 
