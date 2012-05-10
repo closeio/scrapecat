@@ -7,10 +7,9 @@ class ScrapeCatApp(Flask):
         settings = kwargs.pop('settings', 'scrapecat.config')
         super(ScrapeCatApp, self).__init__(__name__, *args, **kwargs)
         self.config.from_object(settings)
-        self.db = MongoEngine(self)        
+        self.db = MongoEngine(self)
 
 
 app = ScrapeCatApp()
 
 import scrapecat.views
-

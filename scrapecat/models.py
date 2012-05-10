@@ -1,6 +1,5 @@
 from mongoengine import *
 
-
 class DocumentBase(Document):
     date_created = DateTimeField()
     date_updated = DateTimeField()
@@ -11,7 +10,6 @@ class DocumentBase(Document):
         self.date_updated = datetime.datetime.now()
         return super(DocumentBase, self).save(*args, **kwargs)
 
-
 class WebPage(DocumentBase):
     url = URLField()
-    
+    html = StringField()
