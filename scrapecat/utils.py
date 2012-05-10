@@ -1,3 +1,6 @@
+import re
+from scrapecat.validators import email_re
+
 def traverse(parent_node, match_el=None, match_text=None, depth=0, ignore_tags=None):
     ret = []
     node_info = parent_node.evaluateJavaScript(
@@ -94,3 +97,15 @@ def group_by_common_parents(els1, els2):
             groups.append([els1[n].element, els2[row.index(the_max)].element, group_parent])
 
     return groups
+
+
+"""
+Returns an array of emails found in a string.
+"""
+def find_emails(s):
+    emails = []
+    # Split the string at some special characters, so emails like "me@example.com"  or <me@example.com> are found.
+    for part in re.split('[ \'"<>:]+', s):
+        if email_re.match(part):
+            emails.append(part)
+    return emails
