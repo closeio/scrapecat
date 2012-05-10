@@ -32,3 +32,5 @@ pip-log.txt
 # backups
 *.orig
 *.bak
+
+.DS_Store

@@ -1,0 +1,13 @@
+form.well label {
+    font-weight: bold;
+    width: 40px;
+}
+form.well input {
+    width: 320px;
+}
+
+.form-container {
+    width: 500px;
+    margin: auto;
+    margin-top: 20px;
+}
