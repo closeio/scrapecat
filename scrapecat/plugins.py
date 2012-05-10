@@ -41,8 +41,10 @@ class BasePlugin(Plugin):
     def process(self):
         # This will ignore multiple instances of the same meta tag.
         meta = dict([(el.attribute('name'), el.attribute('content')) for el in self.frame.findAllElements('meta')])
+        title = self.frame.findFirstElement('title').toPlainText()
         return {
             'meta': meta,
+            'title': title,
         }
 
 class ContactPlugin(Plugin):
