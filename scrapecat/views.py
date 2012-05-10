@@ -13,7 +13,7 @@ def index():
          
     return render_template('index.html', form=form)
 
-@app.route('/scrape', methods=("GET", "POST"))
+@app.route('/scrape/')
 def scrape():
     if not request.args.get('url', False):
         jsonify(success=False, error='No URL supplied')

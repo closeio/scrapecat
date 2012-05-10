@@ -2,17 +2,18 @@
 
 {% block content %}
 
-<form id="ScrapeRequestForm">
+<form id="ScrapeRequestForm" action="{{ url_for('scrape') }}" method="get">
     {{ form.csrf }}
     {{ form.url.label }} {{ form.url }}
-    <input class="button" type="submit" name="submit" value="Scrape!">
+    <input class="button" type="submit" value="Scrape!">
 </form>
 
-<div class="results"></div>
+<div id="ScrapeRequestFormResults" class="results"></div>
 
 <script type="text/javascript">
-    $('#ScrapeRequestForm input[type=submit]').click(function() {
-        alert("hello");
+    $('#ScrapeRequestForm').ajaxForm({
+        target: '#ScrapeRequestFormResults',
+        success: function() { alert('success'); },
     });
 </script>
 
