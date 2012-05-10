@@ -1,47 +1,40 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <script type="text/javascript" src="{{ url_for("static", filename="js/index.js") }}"></script>
 
     <div class="form-container">
-        <form id="ScrapeRequestForm" action="{{ url_for('scrape') }}" method="get" class="well form-inline">
+        <form id="ScrapeRequestForm" action="{{ url_for("scrape") }}" method="get" class="well form-inline">
             {{ form.csrf }}
             {{ form.url.label }}
-            {{ form.url(placeholder='http://socialmediadirectory.org/x-country-us') }}
+            {{ form.url(placeholder="http://socialmediadirectory.org/x-country-us") }}
             <button id="submit" class="btn btn-primary" type="submit">Scrape!</button>
         </form>
     </div>
 
     <div id="ScrapeRequestFormResults" class="results hide">
-        <div class='phone_numbers'>
-            <h3>Phone Numbers</h3>
+        <div class="contacts">
+            <h2>Contacts</h2>
+            <table id="contacts" class="table">
+                <thead>
+                    <tr>
+                        <th>Phone</th>
+                        <th>Email</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+        <div class="phones">
+            <h2>Phone Numbers</h2>
             <ul>
             </ul>
         </div>
-        <div class='emails'>
-            <h3>Email Addresses</h3>
+        <div class="emails">
+            <h2>Email Addresses</h2>
             <ul>
             </ul>
         </div>
     </div>
-
-    <script type="text/javascript">
-        $('#ScrapeRequestForm').ajaxForm({
-            beforeSubmit: function() {
-                $('form#ScrapeRequestForm button#submit').addClass('disabled').removeClass('btn-primary');
-            },
-            dataType: 'json',
-            target: '#ScrapeRequestFormResults',
-            success: function(results) {
-                for (var type in results) {
-                    if (results.hasOwnProperty(type)){
-                        values = results[type]
-                        for (var i = 0; i < values.length; i ++)
-                            $('#ScrapeRequestFormResults .' + type + ' ul').append("<li>" + values[i] + "</li>");
-                    }
-                }
-                $('#ScrapeRequestFormResults').show(500);
-            },
-        });
-    </script>
-
 {% endblock %}
