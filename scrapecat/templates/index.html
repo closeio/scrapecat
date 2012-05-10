@@ -17,6 +17,9 @@
             <tr>
                 <td>{{ phones }}</td>
                 <td>{{ emails }}</td>
+                {{#addresses}}
+                    <td> {{city}}, {{state}}</td>
+                {{/addresses}}
             </tr>
         </script>
         <script id="phone" type="text/html">
@@ -35,6 +38,7 @@
                     <tr>
                         <th>Phone</th>
                         <th>Email</th>
+                        <th>Address</th>
                     </tr>
                 </thead>
                 <tbody>
