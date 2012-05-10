@@ -29,6 +29,7 @@ class Plugin(object):
         QWebSettings.globalSettings().setAttribute(QWebSettings.AutoLoadImages, False)
         QWebSettings.globalSettings().setAttribute(QWebSettings.PluginsEnabled, False)
         self.page, self.resources = self.ghost.open(self.url)
+        self.body = self.ghost.main_frame.findFirstElement('body')
         logging.debug('Fetched the page')
 
     def process(self, webpage):
@@ -46,14 +47,14 @@ class ContactPlugin(Plugin):
         }
 
     def emails(self):
-        els = utils.traverse(self.ghost.main_frame.findFirstElement('body'),
+        els = utils.traverse(self.body,
                 match_el=lambda el: utils.find_emails(el.attribute('href')),
-                match_text=lambda s: utils.find_emails(s))
+                match_text=lambda s: utils.find_emails(s), ignore_tags=[])
         return list(chain(*[utils.find_emails(el.attribute('href')) + utils.find_emails(el.toPlainText()) for el in els]))
 
     def phone_numbers(self):
         number_match = lambda t: list(phonenumbers.PhoneNumberMatcher(t, 'US'))
-        els = utils.traverse(self.ghost.main_frame.findFirstElement('body'),
+        els = utils.traverse(self.body,
                 match_text=number_match)
         return list(chain(*[[match.raw_string for match in phonenumbers.PhoneNumberMatcher(el.toPlainText(), 'US')] for el in els]))
 
