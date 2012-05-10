@@ -1,5 +1,6 @@
 Flask
 Flask-WTF
+requests
 mongoengine
 git+git://github.com/sbook/flask-mongoengine
 Ghost.py

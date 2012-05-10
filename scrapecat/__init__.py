@@ -15,3 +15,4 @@ class ScrapeCatApp(Flask):
 app = ScrapeCatApp()
 
 import scrapecat.views
+import scrapecat.tasks

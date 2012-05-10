@@ -1,3 +1,4 @@
+import datetime
 from mongoengine import *
 
 class DocumentBase(Document):
@@ -5,7 +6,7 @@ class DocumentBase(Document):
     date_updated = DateTimeField()
 
     def save(self, *args, **kwargs):
-        if not self.creation_date:
+        if not self.date_created:
             self.date_created = datetime.datetime.now()
         self.date_updated = datetime.datetime.now()
         return super(DocumentBase, self).save(*args, **kwargs)
