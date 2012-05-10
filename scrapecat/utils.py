@@ -28,7 +28,7 @@ def traverse(parent_node, match_el=None, match_text=None, depth=0, ignore_tags=N
                         match_text=match_text,
                         depth=depth+1)
                     # print ' '*depth, 'NODE', node.tagName()
-                    node = node.nextSibling()
+                node = node.nextSibling()
             elif node_type == 3: # text node
                 stripped_node_value = node_value.strip()
                 if stripped_node_value: # skip empty nodes
