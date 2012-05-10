@@ -55,7 +55,7 @@ class ContactPlugin(Plugin):
         number_match = lambda t: list(phonenumbers.PhoneNumberMatcher(t, 'US'))
         els = utils.traverse(self.ghost.main_frame.findFirstElement('body'),
                 match_text=number_match)
-        return [el.toPlainText() for el in els]
+        return list(chain(*[[match.raw_string for match in phonenumbers.PhoneNumberMatcher(el.toPlainText(), 'US')] for el in els]))
 
 if __name__ == '__main__':
     url = sys.argv[1]
