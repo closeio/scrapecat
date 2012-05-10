@@ -29,6 +29,7 @@ class Plugin(object):
         QWebSettings.globalSettings().setAttribute(QWebSettings.AutoLoadImages, False)
         QWebSettings.globalSettings().setAttribute(QWebSettings.PluginsEnabled, False)
         self.page, self.resources = self.ghost.open(self.url)
+        self.frame = self.ghost.main_frame
         self.body = self.ghost.main_frame.findFirstElement('body')
         logging.debug('Fetched the page')
 
@@ -37,7 +38,12 @@ class Plugin(object):
 
 
 class BasePlugin(Plugin):
-    pass
+    def process(self):
+        # This will ignore multiple instances of the same meta tag.
+        meta = dict([(el.attribute('name'), el.attribute('content')) for el in self.frame.findAllElements('meta')])
+        return {
+            'meta': meta,
+        }
 
 class ContactPlugin(Plugin):
     def process(self):
