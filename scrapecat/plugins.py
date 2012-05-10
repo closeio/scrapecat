@@ -1,7 +1,10 @@
 import os
 import sys
+from itertools import chain
+import json
 import sys
 import logging
+
 import ghost
 
 sys.path.append(os.path.abspath('.'))
@@ -9,6 +12,9 @@ sys.path.append(os.path.abspath('.'))
 from scrapecat import models
 
 from scrapecat import models, utils
+
+
+from scrapecat import models, utils, validators
 from PySide.QtWebKit import QWebSettings
 
 import phonenumbers
@@ -41,8 +47,9 @@ class ContactPlugin(Plugin):
 
     def emails(self):
         els = utils.traverse(self.ghost.main_frame.findFirstElement('body'),
-                match_el=lambda el: '@' in el.attribute('href'))
-        return [el.attribute('href').replace('mailto:', '') for el in els]
+                match_el=lambda el: utils.find_emails(el.attribute('href')),
+                match_text=lambda s: utils.find_emails(s))
+        return list(chain(*[utils.find_emails(el.attribute('href')) + utils.find_emails(el.toPlainText()) for el in els]))
 
     def phone_numbers(self):
         number_match = lambda t: list(phonenumbers.PhoneNumberMatcher(t, 'US'))
@@ -53,4 +60,4 @@ class ContactPlugin(Plugin):
 if __name__ == '__main__':
     url = sys.argv[1]
     c = ContactPlugin(url=url)
-    print c.process()
+    print json.dumps(c.process())
