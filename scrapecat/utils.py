@@ -109,3 +109,14 @@ def find_emails(s):
         if email_re.match(part):
             emails.append(part)
     return emails
+
+
+
+from phonenumbers.phonenumberutil import format_number, parse, PhoneNumberFormat
+
+def format_us_phone_number(value):
+    phone = parse(value, 'US')
+    formatted = format_number(phone, PhoneNumberFormat.E164)
+    if phone.extension:
+        formatted += 'x%s' % phone.extension
+    return formatted

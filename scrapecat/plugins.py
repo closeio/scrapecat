@@ -55,16 +55,19 @@ class ContactPlugin(Plugin):
         self.email_els = utils.traverse(self.body,
                 match_el=lambda el: utils.find_emails(el.attribute('href')),
                 match_text=lambda s: utils.find_emails(s), ignore_tags=[])
-        return list(chain(*[utils.find_emails(el.attribute('href')) + utils.find_emails(el.toPlainText()) for el in self.email_els]))
+        return list(set(chain(*[utils.find_emails(el.attribute('href')) + utils.find_emails(el.toPlainText()) for el in self.email_els])))
 
     def phones(self):
         number_match = lambda t: list(phonenumbers.PhoneNumberMatcher(t, 'US'))
         self.phone_els = utils.traverse(self.body,
                 match_text=number_match)
-        return list(chain(*[[match.raw_string for match in phonenumbers.PhoneNumberMatcher(el.toPlainText(), 'US')] for el in self.phone_els]))
+        return list(set(chain(*[[utils.format_us_phone_number(match.raw_string) for match in phonenumbers.PhoneNumberMatcher(el.toPlainText(), 'US')] for el in self.phone_els])))
 
     def contacts(self):
-        return [[email.attribute('href'), phone.toPlainText()] for email, phone, group_parent in utils.group_by_common_parents(self.email_els, self.phone_els)]
+        return [{
+            'emails': list(set(utils.find_emails(email.attribute('href')) + utils.find_emails(email.toPlainText()))),
+            'phones': list(set([utils.format_us_phone_number(match.raw_string) for match in phonenumbers.PhoneNumberMatcher(phone.toPlainText(), 'US')])),
+        } for email, phone, group_parent in utils.group_by_common_parents(self.email_els, self.phone_els)]
 
 if __name__ == '__main__':
     url = sys.argv[1]
