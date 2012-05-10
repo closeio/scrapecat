@@ -1,15 +1,23 @@
 from scrapecat import app
-from flask import request, jsonify
-from plugins import BasePlugin
+from flask import request, jsonify, render_template
+from scrapecat import plugins
+from scrapecat import forms
 
 @app.route('/')
 def index():
-    return "ScrapeCat!"
+    form = forms.ScrapeRequestForm(request.form)
+    if request.method == 'POST' and form.validate():
+        url = form.url     
+        p = plugins.BasePlugin(url=url)
+        return jsonify(**p.process)
+         
+    return render_template('index.html', form=form)
 
-@app.route('/scrape')
+@app.route('/scrape', methods=("GET", "POST"))
 def scrape():
     if not request.args.get('url', False):
         jsonify(success=False, error='No URL supplied')
     else:
-        p = BasePlugin(url=request.args.get('url'))
+        p = plugins.BasePlugin(url=request.args.get('url'))
         return jsonify(**p.process)
+
