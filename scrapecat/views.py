@@ -12,7 +12,7 @@ logging.basicConfig(level=logging.DEBUG)
 @app.route('/')
 def index():
     form = forms.ScrapeRequestForm(request.form)
-    if request.method == 'POST' and form.validate():
+    if form.validate():
         url = form.url
         p = plugins.BasePlugin(url=url)
         return jsonify(**p.process)
