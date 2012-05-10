@@ -8,21 +8,6 @@ from scrapecat import forms
 
 from plugins import ContactPlugin
 
-def scrape_shit(url):
-    print "start scrape_shit"
-    from scrapecat.scraper import settings as scraper_settings 
-    from scrapecat.scraper.spiders.webpage import WebpageSpider
-    from scrapy.crawler import CrawlerProcess
-
-    spider = WebpageSpider()
-    spider.start_urls = [url]
-
-    crawler = CrawlerProcess(scraper_settings)
-    crawler.install()
-    crawler.configure()
-    crawler.queue.append_spider(spider)
-    crawler.start()
-    print "end scrape_shit"
 
 
 logging.basicConfig(level=logging.DEBUG)
@@ -42,6 +27,5 @@ def scrape():
         jsonify(success=False, error='No URL supplied')
     else:
         url = str(request.args.get('url'))
-        #scrape_shit(url)
         output = os.popen('python scrapecat/plugins.py %s' % url)
         return Response(response=output.read(), content_type='application/json')

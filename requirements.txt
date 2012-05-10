@@ -3,3 +3,5 @@ Flask-WTF
 mongoengine
 git+git://github.com/sbook/flask-mongoengine
 Ghost.py
+Celery
+flask-celery
