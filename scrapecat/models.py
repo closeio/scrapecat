@@ -10,8 +10,11 @@ class DocumentBase(Document):
             self.date_created = datetime.datetime.now()
         self.date_updated = datetime.datetime.now()
         return super(DocumentBase, self).save(*args, **kwargs)
+    
+    meta = { 'allow_inheritance': True }
 
 class Webpage(DocumentBase):
-    url = URLField()
+    url = URLField(unique=True)
     headers = DictField()
     html = StringField()
+
