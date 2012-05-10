@@ -2,7 +2,7 @@ import os
 import logging
 
 from scrapecat import app
-from flask import request, jsonify, render_template
+from flask import request, jsonify, render_template, Response
 from scrapecat import plugins
 from scrapecat import forms
 
@@ -26,4 +26,4 @@ def scrape():
     else:
         url = str(request.args.get('url'))
         output = os.popen('python scrapecat/plugins.py %s' % url)
-        return output.read()
+        return Response(response=output.read(), content_type='application/json')
