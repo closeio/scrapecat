@@ -1,16 +1,31 @@
 {% extends "base.html" %}
 
 {% block content %}
+    <script type="text/javascript" src="{{ url_for("static", filename="js/ICanHaz.min.js") }}"></script>
     <script type="text/javascript" src="{{ url_for("static", filename="js/index.js") }}"></script>
 
     <div class="form-container">
         <form id="ScrapeRequestForm" action="{{ url_for("scrape") }}" method="get" class="well form-inline">
             {{ form.csrf }}
             {{ form.url.label }}
-            {{ form.url(placeholder="http://socialmediadirectory.org/x-country-us") }}
+            {{ form.url(value="http://socialmediadirectory.org/x-country-us") }}
             <button id="submit" class="btn btn-primary" type="submit">Scrape!</button>
         </form>
     </div>
+    {% raw %}
+        <script id="contact" type="text/html">
+            <tr>
+                <td>{{ phones }}</td>
+                <td>{{ emails }}</td>
+            </tr>
+        </script>
+        <script id="phone" type="text/html">
+            <li>{{ phone }}</li>
+        </script>
+        <script id="email" type="text/html">
+            <li>{{ email }}</li>
+        </script>
+    {% endraw %}
 
     <div id="ScrapeRequestFormResults" class="results hide">
         <div class="contacts">
