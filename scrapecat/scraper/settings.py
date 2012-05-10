@@ -17,6 +17,3 @@ ITEM_PIPELINES = [
     'spider.MongoPipeline',
 ]
 
-SPIDER_MIDDLEWARES = {
-    'scrapy.contrib.spidermiddleware.offsite.OffsiteMiddleware': None,
-}
