@@ -1,7 +1,11 @@
+import os
+import logging
+
 from scrapecat import app
 from flask import request, jsonify
-from plugins import BasePlugin
+from plugins import ContactPlugin
 
+logging.basicConfig(level=logging.DEBUG)
 @app.route('/')
 def index():
     return "ScrapeCat!"
@@ -11,5 +15,6 @@ def scrape():
     if not request.args.get('url', False):
         jsonify(success=False, error='No URL supplied')
     else:
-        p = BasePlugin(url=request.args.get('url'))
-        return jsonify(**p.process)
+        url = str(request.args.get('url'))
+        output = os.popen('python scrapecat/plugins.py %s' % url)
+        return output.read()
