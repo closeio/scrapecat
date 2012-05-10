@@ -1,9 +1,17 @@
 from scrapy.spider import BaseSpider
-from scrapecat.scraper.scraper import items
+from scrapy.contrib.spiders import Rule
+from scrapy.contrib.linkextractors.sgml import SgmlLinkExtractor
+from scrapecat.scraper import items
 
 
 class WebpageSpider(BaseSpider):
     name = 'webpage'
+
+    """
+    rules = (
+        Rule(SgmlLinkExtractor(deny=('*', ))),
+    )
+    """
 
     def parse(self, response):
         item = items.Webpage()

@@ -16,3 +16,7 @@ USER_AGENT = '%s/%s' % (BOT_NAME, BOT_VERSION)
 ITEM_PIPELINES = [
     'spider.MongoPipeline',
 ]
+
+SPIDER_MIDDLEWARES = {
+    'scrapy.contrib.spidermiddleware.offsite.OffsiteMiddleware': None,
+}
