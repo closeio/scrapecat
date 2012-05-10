@@ -17,6 +17,7 @@ def traverse(parent_node, match_el=None, match_text=None, depth=0, ignore_tags=N
 
     if match_el and match_el(parent_node):
         ret.append(parent_node)
+        return ret # Don't traverse children if parent node matches.
     if node_info:
         node = parent_node.firstChild()
         for node_type, node_value in node_info:

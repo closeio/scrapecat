@@ -11,3 +11,23 @@ email_re = re.compile(
 
 # state regex adapted from http://regexlib.com/REDetails.aspx?regexp_id=471
 address_re = re.compile('([A-Z- ]*),?\W+?(A[LKSZRAEP]|C[AOT]|D[EC]|F[LM]|G[AU]|HI|I[ADLN]|K[SY]|LA|M[ADEHINOPST]|N[CDEHJMVY]|O[HKR]|P[ARW]|RI|S[CD]|T[NX]|UT|V[AIT]|W[AIVY])\W+(\d{5}-\d{4}|\d{5})', re.IGNORECASE)
+
+
+# Adapted from Django
+url_no_path_re = re.compile(
+    r'^(?:http)s?://' # http:// or https://
+    r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?))' #domain...
+    r'(?::\d+)?' # optional port
+    r'(?:/?)$', re.IGNORECASE) # no path
+
+social_url_re = re.compile(
+    r'^(?:http)s?://' # http:// or https://
+    r'(?:www\.)?(?:(facebook)\.com|(twitter)\.com|(linkedin)\.com)' #domain...
+    r'(?::\d+)?' # optional port
+    r'(?:\S+)$', re.IGNORECASE) # required path
+
+url_re = re.compile(
+    r'^(?:http)s?://' # http:// or https://
+    r'(?:(?:[A-Z0-9](?:[A-Z0-9-]{0,61}[A-Z0-9])?\.)+(?:[A-Z]{2,6}\.?|[A-Z0-9-]{2,}\.?))' #domain...
+    r'(?::\d+)?' # optional port
+    r'(?:[/?]\S+)$', re.IGNORECASE) # optional path
