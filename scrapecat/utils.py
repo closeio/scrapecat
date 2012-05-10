@@ -38,6 +38,21 @@ def traverse(parent_node, match_el=None, match_text=None, depth=0, ignore_tags=N
     return ret
 
 
+def get_children_by_tag_name(el, tag_name):
+    el = el.firstChild()
+    tag_name = tag_name.lower()
+    ret = []
+    while not el.isNull():
+        if el.tagName().lower() == tag_name:
+            ret.append(el)
+        el = el.nextSibling()
+    return ret
+
+
+def get_unique_css_selector_for_element(el):
+    return '>'.join(['%s:nth(%d)' % (child.tagName().lower(), [el == child for el in get_children_by_tag_name(parent, child.tagName())].index(True)) for parent, child in zip(ps, ps[1:])])
+
+
 """ Returns a list of parents of the given element, starting from the root element to the element itself. """
 def get_parents(el):
     stack = []
