@@ -10,6 +10,7 @@ class DocumentBase(Document):
         self.date_updated = datetime.datetime.now()
         return super(DocumentBase, self).save(*args, **kwargs)
 
-class WebPage(DocumentBase):
+class Webpage(DocumentBase):
     url = URLField()
+    headers = DictField()
     html = StringField()
