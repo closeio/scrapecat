@@ -26,6 +26,5 @@ def scrape():
         jsonify(success=False, error='No URL supplied')
     else:
         url = str(request.args.get('url'))
-        tasks.scrape.apply_async((url,))
         output = os.popen('python scrapecat/plugins.py %s' % url)
         return Response(response=output.read(), content_type='application/json')

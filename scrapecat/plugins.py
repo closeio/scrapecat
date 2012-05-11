@@ -66,12 +66,20 @@ class ContactPlugin(Plugin):
         number_match = lambda t: list(phonenumbers.PhoneNumberMatcher(t, 'US'))
         self.phone_els = utils.traverse(self.body,
                 match_text=number_match)
-        return list(set(chain(*[[utils.format_us_phone_number(match.raw_string) for match in phonenumbers.PhoneNumberMatcher(el.toPlainText(), 'US')] for el in self.phone_els])))
+        phones = []
+        for el in self.phone_els:
+            for match in phonenumbers.PhoneNumberMatcher(el.toPlainText(), 'US'):
+                phones.append({
+                        'type' : utils.number_type(el.toPlainText(), match.raw_string),
+                        'number' : match.raw_string
+                    })
+        return phones
+
 
     def contacts(self):
         return [{
             'emails': list(set(utils.find_emails(email.attribute('href')) + utils.find_emails(email.toPlainText()))),
-            'phones': list(set([utils.format_us_phone_number(match.raw_string) for match in phonenumbers.PhoneNumberMatcher(phone.toPlainText(), 'US')])),
+            'phones': [{'type' : utils.number_type(phone.toPlainText(), match.raw_string), 'number' : utils.format_us_phone_number(match.raw_string)} for match in phonenumbers.PhoneNumberMatcher(phone.toPlainText(), 'US')],
             'addresses': list(chain(*[
                 [(lambda city, state, zip_code: {'city': city.strip(), 'state': state, 'zip': zip_code})(*match) for match in matches]
                     for el, matches in utils.traverse_extract(group_parent, match_text=lambda s: validators.address_re.findall(s))

@@ -227,3 +227,10 @@ def format_us_phone_number(value):
     if phone.extension:
         formatted += 'x%s' % phone.extension
     return formatted
+
+# Take the ten characters in front of the number
+# and see if they indicate it's a phone or a fax
+def number_type(t, number):
+    segment = t[t.find(number)-10: t.find(number)]
+    if re.search('fax', segment, re.IGNORECASE): return 'Fax'
+    else: return 'Tel'

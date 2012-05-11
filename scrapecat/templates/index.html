@@ -18,7 +18,11 @@
     {% raw %}
         <script id="contact" type="text/html">
             <tr>
-                <td>{{ phones }}</td>
+                <td>
+                    {{#phones}}
+                        {{ type }}: {{ number }}
+                    {{/phones}}
+                </td>
                 <td>{{ emails }}</td>
                 <td>
                     {{#addresses}}
@@ -36,7 +40,11 @@
             </tr>
         </script>
         <script id="phone" type="text/html">
-            <li>{{ phone }}</li>
+            <li>
+                {{#phone}}
+                    {{ type }}: {{ number }}<br/>
+                {{/phone}}
+            </li>
         </script>
         <script id="email" type="text/html">
             <li>{{ email }}</li>
