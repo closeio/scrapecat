@@ -1,6 +1,7 @@
 $('#ScrapeRequestForm').ajaxForm({
     beforeSubmit: function() {
         $('form#ScrapeRequestForm button#submit').addClass('disabled').removeClass('btn-primary');
+        $('.loader').show(400);
     },
     dataType: 'json',
     target: '#ScrapeRequestFormResults',
@@ -31,5 +32,6 @@ $('#ScrapeRequestForm').ajaxForm({
             }
         }
         $('#ScrapeRequestFormResults').show(500);
+        $('.loader').hide(400);
     },
 });

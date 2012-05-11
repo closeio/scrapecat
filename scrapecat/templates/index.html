@@ -10,6 +10,9 @@
             {{ form.url.label }}
             {{ form.url(value="http://socialmediadirectory.org/x-country-us") }}
             <button id="submit" class="btn btn-primary" type="submit">Scrape!</button>
+            <div class="loader hide">
+                <img src="{{ url_for('static', filename='img/loader.gif')}}"/>
+            </div>
         </form>
     </div>
     {% raw %}
@@ -17,9 +20,19 @@
             <tr>
                 <td>{{ phones }}</td>
                 <td>{{ emails }}</td>
-                {{#addresses}}
-                    <td> {{city}}, {{state}}</td>
-                {{/addresses}}
+                <td>
+                    {{#addresses}}
+                         {{city}}, {{state}} {{zip}}
+                    {{/addresses}}
+                </td>
+                <td>
+                    {{#social_urls}}
+                        <a href="{{url}}">{{type}}</a>
+                    {{/social_urls}}
+                    {{#urls}}
+                        <a href="{{.}}">{{ . }}</a>
+                    {{/urls}}
+                </td>
             </tr>
         </script>
         <script id="phone" type="text/html">
@@ -39,6 +52,7 @@
                         <th>Phone</th>
                         <th>Email</th>
                         <th>Address</th>
+                        <th>URLs</th>
                     </tr>
                 </thead>
                 <tbody>

@@ -3,11 +3,23 @@ form.well label {
     width: 40px;
 }
 form.well input {
-    width: 320px;
+    width: 295px;
 }
 
 .form-container {
     width: 500px;
     margin: auto;
     margin-top: 20px;
+}
+
+.loader {
+    float: right;
+    margin-top: 4px;
+    margin-right: 5px;
+    display: inline;
+}
+.loader img {
+    display: inline;
+    max-height: 20px;
+    max-width: 20px;
 }

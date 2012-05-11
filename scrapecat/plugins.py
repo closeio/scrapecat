@@ -76,8 +76,8 @@ class ContactPlugin(Plugin):
                 [(lambda city, state, zip_code: {'city': city.strip(), 'state': state, 'zip': zip_code})(*match) for match in matches]
                     for el, matches in utils.traverse_extract(group_parent, match_text=lambda s: validators.address_re.findall(s))
             ])),
-            'urls': list(set([a.attribute('href') for a in group_parent.findAll('a') if validators.url_no_path_re.match(a.attribute('href'))])),
-            'social_urls': dict([([name for name in validators.social_url_re.match(a.attribute('href')).groups() if name][0], a.attribute('href')) for a in group_parent.findAll('a') if validators.social_url_re.match(a.attribute('href'))]),
+            'urls': [a for a in list(set([ a.attribute('href') for a in group_parent.findAll('a')])) if validators.url_no_path_re.match(a)],
+            'social_urls' : [{'type' : [name for name in validators.social_url_re.match(a.attribute('href')).groups() if name and name[0]][0].capitalize(), 'url' : a.attribute('href')} for a in group_parent.findAll('a') if validators.social_url_re.match(a.attribute('href'))],
         } for email, phone, group_parent in utils.group_by_common_parents(self.email_els, self.phone_els)]
 
 if __name__ == '__main__':
