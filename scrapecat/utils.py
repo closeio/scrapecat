@@ -175,6 +175,32 @@ def find_similar_selector_paths(els):
 
 
 """
+Resolves a path obtained by get_selector_path_for_element() relative to the passed in element and returns the matching element.
+The passed in element is usually be the document. If a path contains None as a position, it returns all matching elements, e.g.
+[('body', 0), ('a', None)] would return all "a" elements directly within the body.
+"""
+def get_elements_for_path(el, path):
+    if not path:
+        return [el] # Found it
+    path = path[:]
+    path_el, n = path.pop(0)
+    el = el.firstChild()
+    ret = []
+    while not el.isNull():
+        if el.tagName().lower() == path_el.lower():
+            if n == None or n == 0:
+                ret += get_elements_for_path(el, path)
+            if n == 0:
+                return ret
+            if n != None:
+                n -= 1
+        el = el.nextSibling()
+    return ret
+
+
+
+
+"""
 Returns an array of emails found in a string.
 """
 def find_emails(s):
