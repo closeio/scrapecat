@@ -237,5 +237,5 @@ def format_us_phone_number(value):
 # and see if they indicate it's a phone or a fax
 def number_type(t, number):
     segment = t[t.find(number)-10: t.find(number)]
-    if re.search('fax', segment, re.IGNORECASE): return 'Fax'
-    else: return 'Tel'
+    if re.search('fax', segment, re.IGNORECASE): return 'fax'
+    else: return 'phone'

@@ -71,7 +71,8 @@ class ContactPlugin(Plugin):
             for match in phonenumbers.PhoneNumberMatcher(unicode(el.toPlainText()), 'US'):
                 phones.append({
                         'type' : utils.number_type(unicode(el.toPlainText()), match.raw_string),
-                        'number' : match.raw_string
+                        'raw_number' : match.raw_string,
+                        'number' : utils.format_us_phone_number(match.raw_string),
                     })
         return phone_els, phones
 
