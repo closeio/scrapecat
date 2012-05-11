@@ -20,4 +20,4 @@ class Webpage(DocumentBase):
     url = URLField(primary_key=True, unique=True)
     headers = DictField()
     html = StringField()
-
+    response = DictField() #cached response

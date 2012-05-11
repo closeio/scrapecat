@@ -6,3 +6,4 @@ git+git://github.com/sbook/flask-mongoengine
 git+git://github.com/anemitz/Ghost.py.git
 Celery
 flask-celery
+beautifulsoup4
