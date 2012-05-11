@@ -12,13 +12,13 @@ form.well input {
     margin-top: 20px;
 }
 
-.loader {
+.loader, .done {
     float: right;
     margin-top: 4px;
     margin-right: 5px;
     display: inline;
 }
-.loader img {
+.loader img, .done img {
     display: inline;
     max-height: 20px;
     max-width: 20px;

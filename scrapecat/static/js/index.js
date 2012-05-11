@@ -1,7 +1,7 @@
 $('#ScrapeRequestForm').ajaxForm({
     beforeSubmit: function() {
         $('form#ScrapeRequestForm button#submit').addClass('disabled').removeClass('btn-primary');
-        $('.loader').show(400);
+        $('.loader').fadeIn(400);
     },
     dataType: 'json',
     target: '#ScrapeRequestFormResults',
@@ -31,7 +31,9 @@ $('#ScrapeRequestForm').ajaxForm({
                     renderElement(type, values);
             }
         }
-        $('#ScrapeRequestFormResults').show(500);
-        $('.loader').hide(400);
+        $('#ScrapeRequestFormResults').fadeIn(500);
+        $('.loader').hide(0, function() {
+            $('.done').fadeIn(400).delay(5000).fadeOut(400);
+        });
     },
 });
