@@ -60,7 +60,7 @@ class ContactPlugin(Plugin):
         self.email_els = utils.traverse(self.body,
                 match_el=lambda el: utils.find_emails(el.attribute('href')),
                 match_text=lambda s: utils.find_emails(s), ignore_tags=[])
-        return list(set(chain(*[utils.find_emails(el.attribute('href')) + utils.find_emails(el.toPlainText()) for el in self.email_els])))
+        return list(set(chain(*[utils.find_emails(el.attribute('href')) + utils.find_emails(unicode(el.toPlainText())) for el in self.email_els])))
 
     def phones(self):
         number_match = lambda t: list(phonenumbers.PhoneNumberMatcher(t, 'US'))
@@ -68,9 +68,9 @@ class ContactPlugin(Plugin):
                 match_text=number_match)
         phones = []
         for el in self.phone_els:
-            for match in phonenumbers.PhoneNumberMatcher(el.toPlainText(), 'US'):
+            for match in phonenumbers.PhoneNumberMatcher(unicode(el.toPlainText()), 'US'):
                 phones.append({
-                        'type' : utils.number_type(el.toPlainText(), match.raw_string),
+                        'type' : utils.number_type(unicode(el.toPlainText()), match.raw_string),
                         'number' : match.raw_string
                     })
         return phones
@@ -78,17 +78,17 @@ class ContactPlugin(Plugin):
 
     def contacts(self):
         return [{
-            'emails': list(set(utils.find_emails(email.attribute('href')) + utils.find_emails(email.toPlainText()))),
-            'phones': [{'type' : utils.number_type(phone.toPlainText(), match.raw_string), 'number' : utils.format_us_phone_number(match.raw_string)} for match in phonenumbers.PhoneNumberMatcher(phone.toPlainText(), 'US')],
+            'emails': list(set(utils.find_emails(email.attribute('href')) + utils.find_emails(unicode(email.toPlainText())))),
+            'phones': [{'type' : utils.number_type(unicode(phone.toPlainText()), match.raw_string), 'number' : utils.format_us_phone_number(match.raw_string)} for match in phonenumbers.PhoneNumberMatcher(unicode(phone.toPlainText()), 'US')],
             'addresses': list(chain(*[
                 [(lambda city, state, zip_code: {'city': city.strip(), 'state': state, 'zip': zip_code})(*match) for match in matches]
                     for el, matches in utils.traverse_extract(group_parent, match_text=lambda s: validators.address_re.findall(s))
             ])),
             'urls': [a for a in list(set([ a.attribute('href') for a in group_parent.findAll('a')])) if validators.url_no_path_re.match(a)],
-            'social_urls' : [{'type' : [name for name in validators.social_url_re.match(a.attribute('href')).groups() if name and name[0]][0].capitalize(), 'url' : a.attribute('href')} for a in group_parent.findAll('a') if validators.social_url_re.match(a.attribute('href'))],
+            'social_urls' : [{'type' : [unicode(name) for name in validators.social_url_re.match(a.attribute('href')).groups() if name and name[0]][0].capitalize(), 'url' : a.attribute('href')} for a in group_parent.findAll('a') if validators.social_url_re.match(a.attribute('href'))],
         } for email, phone, group_parent in utils.group_by_common_parents(self.email_els, self.phone_els)]
 
 if __name__ == '__main__':
     url = sys.argv[1]
     c = ContactPlugin(url=url)
-    print json.dumps(c.process())
+    print json.dumps(unicode(c.process()))

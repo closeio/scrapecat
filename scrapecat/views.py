@@ -13,12 +13,8 @@ logging.basicConfig(level=logging.DEBUG)
 @app.route('/')
 def index():
     form = forms.ScrapeRequestForm(request.form)
-    if form.validate():
-        url = form.url
-        p = plugins.BasePlugin(url=url)
-        return jsonify(**p.process)
-
     return render_template('index.html', form=form)
+
 
 @app.route('/scrape/')
 def scrape():
@@ -26,5 +22,6 @@ def scrape():
         jsonify(success=False, error='No URL supplied')
     else:
         url = str(request.args.get('url'))
+        tasks.scrape.apply_async((url,))       
         output = os.popen('python scrapecat/plugins.py %s' % url)
         return Response(response=output.read(), content_type='application/json')
