@@ -49,8 +49,21 @@ def get_children_by_tag_name(el, tag_name):
     return ret
 
 
+"""
+Returns the path how to get to this element.
+Sample path: [(u'body', 0), (u'table', 2), (u'tbody', 0), (u'tr', 0), (u'td', 1), (u'a', 0)]
+"""
+def get_selector_path_for_element(el):
+    ps = get_parents(el)
+    return [(child.tagName().lower(), [el == child for el in get_children_by_tag_name(parent, child.tagName())].index(True)) for parent, child in zip(ps, ps[1:])]
+
+
+"""
+Returns a unique CSS selector for this element using its path, e.g.
+body:nth(0)>table:nth(2)>tbody:nth(0)>tr:nth(0)>td:nth(1)>a:nth(0)
+"""
 def get_unique_css_selector_for_element(el):
-    return '>'.join(['%s:nth(%d)' % (child.tagName().lower(), [el == child for el in get_children_by_tag_name(parent, child.tagName())].index(True)) for parent, child in zip(ps, ps[1:])])
+    return '>'.join(['%s:nth(%d)' % (name, pos) for name, pos in get_selector_path_for_element(el)])
 
 
 """ Returns a list of parents of the given element, starting from the root element to the element itself. """
