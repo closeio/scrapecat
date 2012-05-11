@@ -132,10 +132,11 @@ def group_by_common_parents(els1, els2):
 Takes a list of elements and returns selector paths matching similar elements:  If two or more elements
 match a selector tag1:nth(i1)>tag2:nth(i2)>...>tagm:nth(j)...>tagn-2:nth(in-1)>tagn-1:nth(in), where
 "tag1" to "tagn" and "i1" to "in" are the same, it will return a path matching elements for any j that exists.
-The returned path will have the "nth(j)" value set None to denote that it can be arbitrary.
+The returned path will have the "nth(j)" value set None to denote that it can be arbitrary. It will include the
+elements that matched that path.
 
 Example: If we pass three elements matching body>td:nth(0)>a:nth(2), body>td:nth(3)>a:nth(2) and body>td:nth(4)>a:nth(2),
-we will get [('body', 0), ('td', None), ('a', 2)] as a result.
+we will get [([('body', 0), ('td', None), ('a', 2)], els)] as a result.
 """
 def find_similar_selector_paths(els):
     if not els:
@@ -146,30 +147,33 @@ def find_similar_selector_paths(els):
         path_length = len(path)
         if not path_length in by_length:
             by_length[path_length] = []
-        by_length[path_length].append(path)
+        by_length[path_length].append((el, path))
 
     similar_paths = []
 
-    for length, ps in by_length.iteritems():
-        while ps:
+    for length, data in by_length.iteritems():
+        while data:
             similar_path_found = False
-            p1 = ps.pop()
+            el1, p1 = data.pop()
 
-            found_ps = []
+            found_data = []
+            found_els = []
 
-            for p2 in ps:
+            for el2, p2 in data:
                 diff = [a!=b for a, b in zip(p1, p2)]
                 if diff.count(True) == 1: # one selector is changed
                     idx = diff.index(True)
                     if p1[idx][0] == p2[idx][0]: # same element name
                         if not similar_path_found:
                             similar_path_found = True
-                            similar_paths.append([(el, None) if i == idx else (el, n) for i, (el, n) in enumerate(p1)])
-                        # queue removal of p2 from array
-                        found_ps.append(p2)
+                            # Append the path. Note that the found elements list is still being populated.
+                            similar_paths.append(([(name, None) if i == idx else (name, n) for i, (name, n) in enumerate(p1)], found_els))
+                        # queue removal of (el2, p2) from array
+                        found_data.append((el2, p2))
+                        found_els.append(el2)
 
-            for found_p in found_ps:
-                ps.remove(found_p)
+            for found_entry in found_data:
+                data.remove(found_entry)
     
     return similar_paths
 

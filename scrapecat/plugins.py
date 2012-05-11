@@ -46,8 +46,8 @@ class BasePlugin(Plugin):
 
 class ContactPlugin(Plugin):
     def process(self):
-        emails = self.emails()
-        phones = self.phones()
+        self.email_els, emails = self.emails()
+        self.phone_els, phones = self.phones()
         contacts = self.contacts()
 
         return {
@@ -56,37 +56,48 @@ class ContactPlugin(Plugin):
             'contacts': contacts,
         }
 
-    def emails(self):
-        self.email_els = utils.traverse(self.body,
+    def emails(self, parent=None):
+        email_els = utils.traverse(parent or self.body,
                 match_el=lambda el: utils.find_emails(el.attribute('href')),
                 match_text=lambda s: utils.find_emails(s), ignore_tags=[])
-        return list(set(chain(*[utils.find_emails(el.attribute('href')) + utils.find_emails(unicode(el.toPlainText())) for el in self.email_els])))
+        return email_els, list(set(chain(*[utils.find_emails(el.attribute('href')) + utils.find_emails(unicode(el.toPlainText())) for el in email_els])))
 
-    def phones(self):
+    def phones(self, parent=None):
         number_match = lambda t: list(phonenumbers.PhoneNumberMatcher(t, 'US'))
-        self.phone_els = utils.traverse(self.body,
+        phone_els = utils.traverse(parent or self.body,
                 match_text=number_match)
         phones = []
-        for el in self.phone_els:
+        for el in phone_els:
             for match in phonenumbers.PhoneNumberMatcher(unicode(el.toPlainText()), 'US'):
                 phones.append({
                         'type' : utils.number_type(unicode(el.toPlainText()), match.raw_string),
                         'number' : match.raw_string
                     })
-        return phones
-
+        return phone_els, phones
 
     def contacts(self):
-        return [{
-            'emails': list(set(utils.find_emails(email.attribute('href')) + utils.find_emails(unicode(email.toPlainText())))),
-            'phones': [{'type' : utils.number_type(unicode(phone.toPlainText()), match.raw_string), 'number' : utils.format_us_phone_number(match.raw_string)} for match in phonenumbers.PhoneNumberMatcher(unicode(phone.toPlainText()), 'US')],
-            'addresses': list(chain(*[
-                [(lambda city, state, zip_code: {'city': city.strip(), 'state': state, 'zip': zip_code})(*match) for match in matches]
-                    for el, matches in utils.traverse_extract(group_parent, match_text=lambda s: validators.address_re.findall(s))
-            ])),
-            'urls': [a for a in list(set([ a.attribute('href') for a in group_parent.findAll('a')])) if validators.url_no_path_re.match(a)],
-            'social_urls' : [{'type' : [unicode(name) for name in validators.social_url_re.match(a.attribute('href')).groups() if name and name[0]][0].capitalize(), 'url' : a.attribute('href')} for a in group_parent.findAll('a') if validators.social_url_re.match(a.attribute('href'))],
-        } for email, phone, group_parent in utils.group_by_common_parents(self.email_els, self.phone_els)]
+        group_result = utils.group_by_common_parents(self.email_els, self.phone_els)
+        doc = self.body.document()
+
+        results = []
+
+        for path, els in utils.find_similar_selector_paths([group_parent for email, phone, group_parent in group_result]):
+            for group_parent in utils.get_elements_for_path(doc, path):
+                email_els, emails = self.emails(group_parent)
+                phone_els, phones = self.phones(group_parent)
+                result = {
+                    'emails': emails,
+                    'phones': phones,
+                    'addresses': list(chain(*[
+                        [(lambda city, state, zip_code: {'city': city.strip(), 'state': state, 'zip': zip_code})(*match) for match in matches]
+                            for el, matches in utils.traverse_extract(group_parent, match_text=lambda s: validators.address_re.findall(s))
+                    ])),
+                    'urls': list(set([a.attribute('href') for a in group_parent.findAll('a') if validators.url_no_path_re.match(a.attribute('href'))])),
+                    'social_urls': dict([([name for name in validators.social_url_re.match(a.attribute('href')).groups() if name][0], a.attribute('href')) for a in group_parent.findAll('a') if validators.social_url_re.match(a.attribute('href'))]),
+                }
+                if any(result.values()):
+                    results.append(result)
+        return results
 
 if __name__ == '__main__':
     url = sys.argv[1]
