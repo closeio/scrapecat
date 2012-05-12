@@ -103,4 +103,4 @@ class ContactPlugin(Plugin):
 if __name__ == '__main__':
     url = sys.argv[1]
     c = ContactPlugin(url=url)
-    print json.dumps(c.process())
+    print json.dumps(unicode(c.process()))

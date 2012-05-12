@@ -1,6 +1,11 @@
 import re
 from scrapecat.validators import email_re
 
+"""
+Rewrite of qt traversal to bs
+"""
+def traverse2():
+    pass  
 def traverse(parent_node, match_el=None, match_text=None, depth=0, ignore_tags=None):
     ret = []
     node_info = parent_node.evaluateJavaScript(
@@ -12,6 +17,8 @@ def traverse(parent_node, match_el=None, match_text=None, depth=0, ignore_tags=N
                 } return ret;
             })(this);''')
 
+    print "ret ", ret
+    print "node_info ", node_info
     if ignore_tags is None:
         ignore_tags = ['SCRIPT', 'NOSCRIPT']
 
@@ -41,10 +48,10 @@ def traverse(parent_node, match_el=None, match_text=None, depth=0, ignore_tags=N
 
 def get_children_by_tag_name(el, tag_name):
     el = el.firstChild()
-    tag_name = tag_name.lower()
+    tag_name = unicode(tag_name).lower()
     ret = []
     while not el.isNull():
-        if el.tagName().lower() == tag_name:
+        if unicode(el.tagName()).lower() == tag_name:
             ret.append(el)
         el = el.nextSibling()
     return ret
@@ -56,7 +63,7 @@ Sample path: [(u'body', 0), (u'table', 2), (u'tbody', 0), (u'tr', 0), (u'td', 1)
 """
 def get_selector_path_for_element(el):
     ps = get_parents(el)
-    return [(child.tagName().lower(), [el == child for el in get_children_by_tag_name(parent, child.tagName())].index(True)) for parent, child in zip(ps, ps[1:])]
+    return [(unicode(child.tagName()).lower(), [el == child for el in get_children_by_tag_name(parent, child.tagName())].index(True)) for parent, child in zip(ps, ps[1:])]
 
 
 """
@@ -192,7 +199,7 @@ def get_elements_for_path(el, path):
     el = el.firstChild()
     ret = []
     while not el.isNull():
-        if el.tagName().lower() == path_el.lower():
+        if unicode(el.tagName()).lower() == path_el.lower():
             if n == None or n == 0:
                 ret += get_elements_for_path(el, path)
             if n == 0:

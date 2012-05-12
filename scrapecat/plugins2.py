@@ -23,6 +23,20 @@ class BasePlugin(Plugin):
             'http_headers': self.webpage['headers'],
         }
 
+class ContactsPlugin(Plugin):
+    def process(self):
+        return {
+            'emails': None,
+            'phones': None,
+            'contacts': None,
+        }
+
+    def emails(self):
+        self.email_els = utils.traverse(self.body,
+                match_el=lambda el: utils.find_emails(el.attribute('href')),
+                match_text=lambda s: utils.find_emails(s), ignore_tags=[])
+        return list(set(chain(*[utils.find_emails(el.attribute('href')) + utils.find_emails(unicode(el.toPlainText())) for el in self.email_els])))
+
 
 class PluginProcessor(object):
 

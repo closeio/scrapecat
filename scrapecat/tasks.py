@@ -34,7 +34,7 @@ def scrape(url, postback_url=None):
         
         from scrapecat import plugins2
         processor = plugins2.PluginProcessor()
-        #processor.register('contacts', plugins.ContactPlugin)
+        processor.register('contacts', plugins2.ContactPlugin)
         processor.init(webpage) 
         webpage.response = processor.process()
         webpage.save()
