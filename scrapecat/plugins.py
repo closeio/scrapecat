@@ -12,7 +12,10 @@ sys.path.append(os.path.abspath('.'))
 
 from scrapecat import models, utils, validators
 
-from PySide.QtWebKit import QWebSettings
+try:
+    from PyQt4.QtWebKit import QWebSettings
+except ImportError:
+    from PySide.QtWebKit import QWebSettings
 
 import phonenumbers
 
