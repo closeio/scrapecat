@@ -23,21 +23,21 @@
             <tr>
                 <td>
                     {{#phones}}
-                        {{ type }}: {{ number }}
+                        {{ type }}: {{ number }} ({{ raw_number }})<br>
                     {{/phones}}
                 </td>
                 <td>{{ emails }}</td>
                 <td>
                     {{#addresses}}
-                         {{city}}, {{state}} {{zip}}
+                         {{city}}, {{state}} {{zip}}<br>
                     {{/addresses}}
                 </td>
                 <td>
                     {{#social_urls}}
-                        <a href="{{url}}">{{type}}</a>
+                        <a href="{{url}}">{{type}}</a><br>
                     {{/social_urls}}
                     {{#urls}}
-                        <a href="{{.}}">{{ . }}</a>
+                        <a href="{{.}}">{{ . }}</a><br>
                     {{/urls}}
                 </td>
             </tr>
@@ -45,7 +45,7 @@
         <script id="phone" type="text/html">
             <li>
                 {{#phone}}
-                    {{ type }}: {{ number }}<br/>
+                    {{ type }}: {{ number }} ({{ raw_number }})<br/>
                 {{/phone}}
             </li>
         </script>

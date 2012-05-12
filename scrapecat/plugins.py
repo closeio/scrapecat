@@ -94,7 +94,10 @@ class ContactPlugin(Plugin):
 
                 urls = list(set([unicode(a.attribute('href')) for a in all_links if validators.url_no_path_re.match(a.attribute('href'))]))
 
-                social_urls = dict([([unicode(name) for name in validators.social_url_re.match(a.attribute('href')).groups() if name][0], unicode(a.attribute('href'))) for a in all_links if validators.social_url_re.match(a.attribute('href'))])
+                social_urls = [{
+                    'type': [unicode(name) for name in validators.social_url_re.match(a.attribute('href')).groups() if name][0],
+                    'url': unicode(a.attribute('href'))
+                } for a in all_links if validators.social_url_re.match(a.attribute('href'))]
 
                 result = {
                     'emails': emails,
