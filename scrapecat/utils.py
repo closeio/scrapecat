@@ -17,8 +17,6 @@ def traverse(parent_node, match_el=None, match_text=None, depth=0, ignore_tags=N
                 } return ret;
             })(this);''')
 
-    print "ret ", ret
-    print "node_info ", node_info
     if ignore_tags is None:
         ignore_tags = ['SCRIPT', 'NOSCRIPT']
 
@@ -218,7 +216,7 @@ Returns an array of emails found in a string.
 def find_emails(s):
     emails = []
     # Split the string at some special characters, so emails like "me@example.com"  or <me@example.com> are found.
-    for part in re.split('[ \'"<>:]+', s):
+    for part in re.split('[ \'"<>:]+', unicode(s)):
         if email_re.match(part):
             emails.append(part)
     return emails
